@@ -10,3 +10,7 @@ vinne over alle de andre aliensa og komme deg ut av gjeld
 game mechanics:
 turned based combat
 menneske kidnapping 
+
+
+
+jeg ønsker å få til å lage smooth healthbar
