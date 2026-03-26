@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 # Initialize pygame
 pygame.init()
 
@@ -57,10 +58,10 @@ class Button:
         self.rect = pygame.Rect(x, y, w, h)
 
     def draw(self, surface):
-        color = HOVER_COLOR if self.rect.collidepoint(pygame.mouse.get_pos()) else BUTTON_COLOR
+        color = red
         
 
-        text_surf = font.render(self.text, True, TEXT_COLOR)
+        text_surf = font.render(self.text, True, (0,0,0))
         text_rect = text_surf.get_rect(center=self.rect.center)
         surface.blit(text_surf, text_rect)
 
@@ -257,12 +258,6 @@ while True:
         screen.blit(ufo2, (90,300))
 
        
-   
-    
-        if alien_rect.colliderect(door):
-           level="com"
-        elif alien_rect.colliderect(ufo_rect):
-           level="col"
         if level=="col":
             screen.blit(current_image,(x,y))
         if level=="com":
@@ -291,7 +286,13 @@ while True:
             screen.blit(text2,(400,300))
             pygame.draw.rect(screen,red,healthbar)
             for button in buttons:
-             button.draw(screen)
+                button.draw(screen)
+    
+        if alien_rect.colliderect(door):
+           level="com"
+        elif alien_rect.colliderect(ufo_rect):
+           level="col"
+
 
    
         pygame.display.flip()
