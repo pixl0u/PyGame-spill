@@ -53,7 +53,7 @@ buttons = [
 ]
 te = 100
 angle = 0
-x=3
+g=3
 phealth= 200
 poison=0
 k=5
@@ -71,8 +71,8 @@ while True:
         for i in range(3):
             if te<=0:
                 te=0
-                x=x-1
-                if x>0:
+                g=g-1
+                if g>0:
                     new_health=random.randint(100,300)
                     te=new_health
                     phealth=phealth+50
