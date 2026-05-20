@@ -14,3 +14,15 @@ menneske kidnapping
 
 
 jeg ønsker å få til å lage smooth healthbar
+
+
+jeg skal få bildene og karakterene til å vises å funke når du slåss
+og fienede
+
+gjøre ferdig kombineringen
+
+fiske bakgrunnene 
+
+fikse hitboxen
+
+plukke opp karakterene

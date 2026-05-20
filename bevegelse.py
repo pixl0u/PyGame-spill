@@ -72,12 +72,48 @@ class Button:
             and self.rect.collidepoint(event.pos)
         )
 
+class human:
+    def __init__(self,name,move1,move2,move3,move4,phealth,image):
+        self.name = name
+        self.move1 = move1
+        self.move2 = move2
+        self.move3 = move3
+        self.move4 = move4
+        self.phealth = phealth
+        self.image =  pygame.image.load(image)
+
+class enemy:
+    def __init__(self,name,damage,ehealth,image):
+        self.name = name
+        self.damage = damage
+        self.ehealth = ehealth
+        self.image =  pygame.image.load(image)
+
+
+enemys = [
+    enemy('buff',20,225,'images/enemybuff.png'),
+    enemy('fat',20,225,'images/enemyfat.png'),
+    enemy('human',20,225,'images/enemyhuman.png'),
+    enemy('mutant',20,225,'images/enemymutant.png'),
+    enemy('slim',20,225,'images/enemyslim.png')
+]     
+
+humans = [
+    human('cow','Milksplash','Moo','Blind','Drink milk',125,'images/humancow.png'),
+    human('suit','Moneyspread','Bag throw','Punch','Block',175,'images/humansuit.png'),
+    human('nerd','Fall down','Super jump','Dodge','Power up',150,'images/human2.png'),
+    human('hoodie','Stab','Slash','Punch','Hide',225,'images/humanhoodie.png'),
+    human('fire','Axe chop','Slash','Fireball','Block',250,'images/humanfire.png'),
+    human('human','Punch','Kick','Dodge','Block',200,'images/human.png')
+]
+player = humans[0]  # cow
+enemy1 = enemys[0]  # buff
 # Create buttons
 buttons = [
-    Button("Stab", 905, 500, 129*2, 65*2),
-    Button("Slice", 905, 625, 129*2, 65*2),
-    Button("Poison", 650, 500, 129*2, 65*2),
-    Button("Sheild", 650, 625, 129*2, 65*2)
+    Button(player.move1, 905, 500, 129*2, 65*2),
+    Button(player.move2, 905, 625, 129*2, 65*2),
+    Button(player.move3, 650, 500, 129*2, 65*2),
+    Button(player.move4, 650, 625, 129*2, 65*2)
 ]
 te = 100
 angle = 0
@@ -109,33 +145,36 @@ while True:
 
 
 
+        if level=='bev':
+            alien_rect.x = playerpos.x
+            alien_rect.y = playerpos.y
 
-        alien_rect.x = playerpos.x
-        alien_rect.y = playerpos.y
-
-        ufo_rect.x = 90
-        ufo_rect.y = 300
+            ufo_rect.x = 90
+            ufo_rect.y = 300
     # Key presses
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            playerpos.x -= speed
-            if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
-                playerpos.x += 20
-        if keys[pygame.K_d]:
-            playerpos.x += speed
-            if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
-                playerpos.x -= 20
-        if keys[pygame.K_w]:
-            playerpos.y -= speed
-            if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
-                playerpos.y += 20
-        if keys[pygame.K_s]:
-            playerpos.y += speed
-            if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
-                playerpos.y -= 20
-    
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_a]:
+             playerpos.x -= speed
+             if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
+                    playerpos.x += 20
+            if keys[pygame.K_d]:
+                playerpos.x += speed
+                if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
+                    playerpos.x -= 20
+            if keys[pygame.K_w]:
+                playerpos.y -= speed
+                if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
+                    playerpos.y += 20
+            if keys[pygame.K_s]:
+                playerpos.y += speed
+                if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
+                    playerpos.y -= 20
 
-        if level=='col': 
+#---------------------------------------------------------------------------------
+# collection
+#---------------------------------------------------------------------------------
+
+        elif level=='col': 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_SPACE]:
                 print('nei')
@@ -151,6 +190,10 @@ while True:
                     speed=speed*-1
                 elif x< 0:
                     speed=3
+
+#---------------------------------------------------------------------------------
+# combat
+#---------------------------------------------------------------------------------
         elif level=="com":
             healthbar=pygame.Rect(200, 150, te*2, 50)
        
@@ -250,17 +293,21 @@ while True:
     
     # Drawing
         screen.fill((150, 150, 150))  # background
-        pygame.draw.rect(screen, (0,200,255), wall1)
-        pygame.draw.rect(screen, (0,200,255), wall2)
-        pygame.draw.rect(screen, (0,200,255), wall1)
-        screen.blit(background, (0,0))
-        screen.blit(alien, (playerpos.x,playerpos.y))
-        screen.blit(ufo2, (90,300))
+        if level =='bev':
+            pygame.draw.rect(screen, (0,200,255), wall1)
+            pygame.draw.rect(screen, (0,200,255), wall2)
+            pygame.draw.rect(screen, (0,200,255), wall1)
+            screen.blit(background, (0,0))
+            screen.blit(alien, (playerpos.x,playerpos.y))
+            screen.blit(ufo2, (90,300))
 
        
         if level=="col":
             screen.blit(current_image,(x,y))
         if level=="com":
+          
+            screen.blit(player.image, (100, 400))  
+            screen.blit(enemy1.image, (800, 400))
             screen.blit(top,(905,500))
             screen.blit(top2,(650,500))
             screen.blit(bot,(905,625))
@@ -280,7 +327,7 @@ while True:
             screen.blit(text1, (400, 400))
             text2 = font.render(
                 f'{phealth}',
-               True,
+               True, 
                 (255, 255, 255)
             )
             screen.blit(text2,(400,300))
@@ -292,7 +339,12 @@ while True:
            level="com"
         elif alien_rect.colliderect(ufo_rect):
            level="col"
-
+        
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_k]:
+                level='bev'
+                playerpos.x = 600
+                playerpos.y = 400
 
    
         pygame.display.flip()

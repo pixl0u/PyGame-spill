@@ -91,13 +91,14 @@ while True:
                     te=te-10
                     if k<=0:
                         poison=0
-                if phealth<=0 or x==0:
+                if phealth<=0 or g<=0:
                     if phealth<=0:
                         print('du tapte')
-                    elif x==0:
+                    elif g<=0:
                         print('du vant')
                 else:
                     damage=random.randint(1,10)
+                    
                     phealth=phealth-damage
                     if button.text == 'Stab':
                         if te<=0:
