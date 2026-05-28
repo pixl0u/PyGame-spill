@@ -7,7 +7,7 @@ pygame.init()
 # Screen settings
 WIDTH, HEIGHT = 1200, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Moving Square")
+pygame.display.set_caption("Human fighter ultra deluxe+++")
 
 # Clock
 clock = pygame.time.Clock()
@@ -18,29 +18,22 @@ playerpos = pygame.math.Vector2(WIDTH/2, HEIGHT/2)
 speed = 5
 print('sknskje') 
 alien = pygame.image.load('images/elien.png')
-background = pygame.image.load('images/ship_big.png')
+ship = pygame.image.load('images/ship_big.png')
 ufo = pygame.image.load('images/gfo.png')
 ufo2 =pygame.transform.scale(ufo, (232, 112))
 alien_rect = alien.get_rect()
 ufo_rect = ufo2.get_rect()
-
-
-
-
-
+background1 = pygame.image.load('images/bev_back.png')
 beam = pygame.image.load('images\Big_beam.png')
 ufo = pygame.image.load('images\cig_aufo.gif')
+
+beam_rect=beam.get_rect()
 # Square
 size = 192
 x = -size
 y = 100
 speed = 3
 level='bev'
-
-
-
-
-
 
 top = pygame.image.load('images/top_right.png')
 top2 = pygame.image.load('images/top_left.png')
@@ -73,13 +66,15 @@ class Button:
         )
 
 class human:
-    def __init__(self,name,move1,move2,move3,move4,phealth,image):
+    def __init__(self,name,move1,move2,move3,move4,phealth,u,i,image):
         self.name = name
         self.move1 = move1
         self.move2 = move2
         self.move3 = move3
         self.move4 = move4
         self.phealth = phealth
+        self.u = u
+        self.i = i
         self.image =  pygame.image.load(image)
 
 class enemy:
@@ -91,40 +86,59 @@ class enemy:
 
 
 enemys = [
-    enemy('buff',20,225,'images/enemybuff.png'),
-    enemy('fat',20,225,'images/enemyfat.png'),
-    enemy('human',20,225,'images/enemyhuman.png'),
-    enemy('mutant',20,225,'images/enemymutant.png'),
-    enemy('slim',20,225,'images/enemyslim.png')
+    enemy('buff',30,225,'images/enemybuff.png'),
+    enemy('fat',20,275,'images/enemyfat.png'),
+    enemy('human',25,200,'images/enemyhuman.png'),
+    enemy('mutant',25,230,'images/enemymutant.png'),
+    enemy('slim',15,125,'images/enemyslim.png')
 ]     
 
 humans = [
-    human('cow','Milksplash','Moo','Blind','Drink milk',125,'images/humancow.png'),
-    human('suit','Moneyspread','Bag throw','Punch','Block',175,'images/humansuit.png'),
-    human('nerd','Fall down','Super jump','Dodge','Power up',150,'images/human2.png'),
-    human('hoodie','Stab','Slash','Punch','Hide',225,'images/humanhoodie.png'),
-    human('fire','Axe chop','Slash','Fireball','Block',250,'images/humanfire.png'),
-    human('human','Punch','Kick','Dodge','Block',200,'images/human.png')
+    human('cow','Milksplash','Moo','Blind','Drink milk',125,100,670,'images/humancow.png'),
+    human('suit','Moneyspread','Bag throw','Punch','Block',175,300,670,'images/humansuit.png'),
+    human('nerd','Fall down','Super jump','Dodge','Power up',150,500,670,'images/human2.png'),
+    human('hoodie','Stab','Slash','Punch','Hide',225,700,670,'images/humanhoodie.png'),
+    human('fire','Axe chop','Slash','Fireball','Block',250,900,670,'images/humanfire.png'),
+    human('human','Punch','Kick','Dodge','Block',200,1100,670,'images/human.png')
 ]
-player = humans[0]  # cow
-enemy1 = enemys[0]  # buff
+
+pickup1 = humans[0] 
+pickup2 = humans[1] 
+pickup3 = humans[2] 
+pickup4 = humans[3] 
+pickup5 = humans[4] 
+pickup6 = humans[5] 
+
+fiende1 = enemys[0]
+fiende2 = enemys[1]
+fiende3 = enemys[2]
+fiende4 = enemys[3]
+fiende5 = enemys[4]
+
+pickups = [pickup1,pickup2,pickup3,pickup4,pickup5,pickup6]
+
+player = humans[0] 
+enemy = enemys[0]  
 # Create buttons
-buttons = [
-    Button(player.move1, 905, 500, 129*2, 65*2),
-    Button(player.move2, 905, 625, 129*2, 65*2),
-    Button(player.move3, 650, 500, 129*2, 65*2),
-    Button(player.move4, 650, 625, 129*2, 65*2)
-]
-te = 100
+
+enemy = random.choice(enemys)
+  
+
+
 angle = 0
 g=3
 phealth= 200
 poison=0
 k=5
 
+active_pickups = random.sample(pickups, 3)
+
+width = player.image.get_width() * 2
+height = player.image.get_height() * 2
 
 
-
+width = enemy.image.get_width() * 2
+height = enemy.image.get_height() * 2
 
 
 # Game loop
@@ -135,17 +149,20 @@ while True:
                 pygame.quit()
                 sys.exit()
                 
-
+        buttons = [
+            Button(player.move1, 905, 500, 129*2, 65*2),
+            Button(player.move2, 905, 625, 129*2, 65*2),
+            Button(player.move3, 650, 500, 129*2, 65*2),
+            Button(player.move4, 650, 625, 129*2, 65*2)
+        ]
         wall1 = pygame.Rect(675, 0, 240, 175)
         wall2 = pygame.Rect(250, 0, 240, 175)
         door = pygame.Rect(500, 0, 168, 10)
-    
 
-
-
-
+       
 
         if level=='bev':
+            speed=3
             alien_rect.x = playerpos.x
             alien_rect.y = playerpos.y
 
@@ -176,12 +193,27 @@ while True:
 
         elif level=='col': 
             keys = pygame.key.get_pressed()
+          
+
+            beam_rect.x = x  
+            beam_rect.y = y
+
+
+
             if keys[pygame.K_SPACE]:
-                print('nei')
                 current_image = beam
                 y=100
+                for pickup in  active_pickups[:]:
+                    pickup_rect = pickup.image.get_rect(topleft=(pickup.u, pickup.i))
+                    if beam_rect.colliderect(pickup_rect):         
+                        print(f'{pickup.name}')
+                        player=pickup
+                        active_pickups.remove(pickup)
+                        
+
             elif keys[pygame.K_r]:
                 level="bev"
+                
             else:
                 y=42
                 current_image= ufo
@@ -195,16 +227,17 @@ while True:
 # combat
 #---------------------------------------------------------------------------------
         elif level=="com":
-            healthbar=pygame.Rect(200, 150, te*2, 50)
-       
-        
+            healthbar=pygame.Rect(650, 100, enemy.ehealth*2, 50)
+            healthbar2=pygame.Rect(100, 600, player.phealth*2, 50)
+            player_scaled = pygame.transform.scale(player.image, (width, height))
+            enemy_scaled = pygame.transform.scale(enemy.image, (width, height))
             for i in range(3):
-                if te<=0:
-                    te=0
+                if enemy.ehealth<=0:
+                    enemy.ehealth=0
                     g=g-1
                     if g>0:
-                        new_health=random.randint(100,300)
-                        te=new_health
+                        enemy = random.choice(enemys)
+                        
                         phealth=phealth+50
               
         
@@ -214,7 +247,8 @@ while True:
            
                 if button.clicked(event):
                     crit=random.randint(1,100)
-                    print (f"{crit} crit")
+                    if crit > 95:
+                        print (f"{crit} crit")
                     print(f"{button.text} clicked!")
                     if poison==1:
                         k=k-1     
@@ -292,46 +326,48 @@ while True:
 
     
     # Drawing
-        screen.fill((150, 150, 150))  # background
+        screen.fill((150, 150, 150))  
         if level =='bev':
             pygame.draw.rect(screen, (0,200,255), wall1)
             pygame.draw.rect(screen, (0,200,255), wall2)
             pygame.draw.rect(screen, (0,200,255), wall1)
-            screen.blit(background, (0,0))
+            screen.blit(background1,(0,0))
+            screen.blit(ship, (0,0))
             screen.blit(alien, (playerpos.x,playerpos.y))
             screen.blit(ufo2, (90,300))
 
        
         if level=="col":
             screen.blit(current_image,(x,y))
+            for pickup in active_pickups:
+                screen.blit(pickup.image, (pickup.u, pickup.i))
+            
+          
+             
         if level=="com":
           
-            screen.blit(player.image, (100, 400))  
-            screen.blit(enemy1.image, (800, 400))
+            screen.blit(player_scaled, (150, 400))  
+            screen.blit(enemy_scaled, (800, 300))
             screen.blit(top,(905,500))
             screen.blit(top2,(650,500))
             screen.blit(bot,(905,625))
             screen.blit(bot2,(650,625))
             screen.blit(mid,(892,614))
             text = font.render(
-                f'health {te}',
+                f'Health {enemy.ehealth}',
                 True,
                 (255, 255, 255)
             )
-            screen.blit(text, (400, 500))
-            text1 = font.render(
-                f'{angle}',
-                True,   
-                (255, 255, 255)
-            )
-            screen.blit(text1, (400, 400))
+           
+            screen.blit(text, (650, 175))
             text2 = font.render(
-                f'{phealth}',
+                f'Health {phealth}',
                True, 
                 (255, 255, 255)
             )
-            screen.blit(text2,(400,300))
+            screen.blit(text2,(100,675))
             pygame.draw.rect(screen,red,healthbar)
+            pygame.draw.rect(screen,red,healthbar2)
             for button in buttons:
                 button.draw(screen)
     

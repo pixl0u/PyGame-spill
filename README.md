@@ -19,7 +19,7 @@ jeg ønsker å få til å lage smooth healthbar
 jeg skal få bildene og karakterene til å vises å funke når du slåss
 og fienede
 
-gjøre ferdig kombineringen
+gjøre ferdig kombineringen done
 
 fiske bakgrunnene 
 
