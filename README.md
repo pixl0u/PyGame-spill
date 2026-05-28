@@ -13,16 +13,22 @@ menneske kidnapping
 
 
 
-jeg ønsker å få til å lage smooth healthbar
+
 
 
 jeg skal få bildene og karakterene til å vises å funke når du slåss
-og fienede
+og fienede           done
 
-gjøre ferdig kombineringen done
+plukke opp karakterene           done
+
+gjøre ferdig kombineringen            done
 
 fiske bakgrunnene 
 
 fikse hitboxen
 
-plukke opp karakterene
+fiske healtbar
+
+lage ny alien
+
+fikse alle moves
