@@ -26,11 +26,13 @@ ufo_rect = ufo2.get_rect()
 
 beam = pygame.image.load('images\Big_beam.png')
 ufo = pygame.image.load('images\cig_aufo.gif')
+sign = pygame.image.load('images/sign.png')
 
 background1 = pygame.image.load('images/bev_back.png').convert_alpha()
 background2 = pygame.image.load('images/col_back.png').convert_alpha()
 grass = pygame.image.load('images/grass.png').convert_alpha()
 background3 = pygame.image.load('images/bev_back.png').convert_alpha()
+background4 = pygame.image.load('images/win_and_lose.png').convert_alpha()
 
 beam_rect=beam.get_rect()
 # Square
@@ -91,20 +93,20 @@ class enemy:
 
 
 enemys = [
-    enemy('buff',30,225,'images/enemybuff.png'),
-    enemy('fat',20,275,'images/enemyfat.png'),
-    enemy('human',25,200,'images/enemyhuman.png'),
-    enemy('mutant',25,230,'images/enemymutant.png'),
-    enemy('slim',15,125,'images/enemyslim.png')
+    enemy('buff',25,225,'images/enemybuff.png'),
+    enemy('fat',15,275,'images/enemyfat.png'),
+    enemy('human',20,200,'images/enemyhuman.png'),
+    enemy('mutant',20,230,'images/enemymutant.png'),
+    enemy('slim',10,125,'images/enemyslim.png')
 ]     
 
 humans = [
-    human('cow','Milksplash','Moo','Milkshot','Drink milk',125,100,674,'images/humancow.png'),
-    human('suit','Slap','Moneyspread','Bag throw','Block',175,300,674,'images/humansuit.png'),
-    human('nerd','Trip','Super jump','Dodge','Power up',150,500,674,'images/human2.png'),
-    human('hoodie','Punch','Slash','Dodge','Stab',225,700,674,'images/humanhoodie.png'),
-    human('fire','Axe chop','Slash','Fireball','Block',250,900,674,'images/humanfire.png'),
-    human('human','Punch','Kick','Dodge','Block',200,1100,674,'images/human.png')
+    human('cow','Milksplash','Milkshot','Moo','Drink milk',135,100,674,'images/humancow.png'),
+    human('suit','Slap','Bag charge','Moneyspread','Block',185,300,674,'images/humansuit.png'),
+    human('nerd','Trip','Super jump','Dodge','Power up',160,500,674,'images/human2.png'),
+    human('hoodie','Punch','Slash','Dodge','Stab',235,700,674,'images/humanhoodie.png'),
+    human('fire','Axe chop','Slash','Fireball','Block',260,900,674,'images/humanfire.png'),
+    human('human','Punch','Kick','Dodge','Block',210,1100,674,'images/human.png')
 ]
 
 pickup1 = humans[0] 
@@ -134,10 +136,10 @@ angle = 0
 g=3
 phealth= player.phealth
 ehealth = enemy.ehealth
-poison=0
-k=5
+bleed=0
+bleeding=5
 timer = 1
-active_pickups = random.sample(pickups, 3)
+
 
 width = player.image.get_width() * 2
 height = player.image.get_height() * 2
@@ -146,9 +148,9 @@ height = player.image.get_height() * 2
 width = enemy.image.get_width() * 2
 height = enemy.image.get_height() * 2
 
-cooldown_max = 60   
+cooldown_max = 30   
 cooldown_counter = 0
-
+active_pickups = random.sample(pickups, 3)
 # Game loop
 while True:
     
@@ -220,6 +222,7 @@ while True:
                         
 
             elif keys[pygame.K_r]:
+                active_pickups = random.sample(pickups, 3)
                 level="bev"
                 
             else:
@@ -250,11 +253,24 @@ while True:
                     if g>0:
                         enemy = random.choice(enemys)
                         ehealth = enemy.ehealth
-                        phealth=phealth+50
+                        phealth +=35
                     
+                if phealth<=0 or g==0:
+                            if phealth<=0:
+                                print('du tapte')
+                                level='lose'
+                                playerpos.x = 600
+                                playerpos.y = 400
+                            elif g==0:
+                                print('du vant')
+                                level='win'
+                                playerpos.x = 600
+                                playerpos.y = 400
+
+
 
             if cooldown_counter > 0:
-                cooldown_counter -= 1   # counts down 1 per frame
+                cooldown_counter -= 1   
                 timer = 0
             else:
                 timer = 1           
@@ -264,23 +280,19 @@ while True:
             for button in buttons:
            
                 if button.clicked(event):
-                    if timer == 1 :
-                        cooldown_counter = cooldown_max 
-                        crit=random.randint(1,100)
-                        if crit > 95:
-                            print (f"{crit} crit")
-                        print(f"{button.text} clicked!")
-                        if poison==1:
-                            k=k-1     
-                            te=te-10
-                        if k<=0:
-                            poison=0
-                        if phealth<=0 or g==0:
-                            if phealth<=0:
-                                print('du tapte')
-                            elif g==0:
-                                print('du vant')
-                        else:
+                        if timer == 1 :
+                            cooldown_counter = cooldown_max 
+                            crit=random.randint(1,100)
+                            if crit > 95:
+                                print (f"{crit} crit")
+                                print(f"{button.text} clicked!")
+                            if bleed==1:
+                                bleeding -=1     
+                                ehealth -= 30
+                            if bleeding<=0:
+                                bleed=0
+                       
+                        
                             damage=enemy.damage
                             if g>0:
                                 phealth=phealth-damage
@@ -290,31 +302,29 @@ while True:
                                 
                                 else:
                                     if crit >=95:
-                                        ehealth-=30
+                                        ehealth-=40
                                     else:
-                                        ehealth -= 15
+                                        ehealth -= 25
                                 if angle==270:
                                     mid = pygame.transform.rotate(mid,0)
                                 else:
                                     mid = pygame.transform.rotate(mid,270-angle)
                                     angle = 270
                                 print(ehealth)
-                    
                             elif button.text == 'Axe chop' or button.text == 'Milksplash':
                                 if ehealth<=0:
                                     print(f"{ehealth} Health")
                                 else:
                                     if crit >=95:
-                                        ehealth -= 50
+                                        ehealth -= 60
                                     else:
-                                        ehealth -= 30
+                                        ehealth -= 40
                                 if angle==270:
                                     mid = pygame.transform.rotate(mid,0)
                                 else:
                                     mid = pygame.transform.rotate(mid,270-angle)
                                     angle = 270
                                 print(ehealth)
-                          
                             elif button.text == 'Trip':
                                 if ehealth<=0:
                                     print(f"{ehealth} Health")
@@ -329,19 +339,7 @@ while True:
                                     mid = pygame.transform.rotate(mid,270-angle)
                                     angle = 270
                                 print(ehealth)
-                          
-                            elif button.text == 'Poison':
-                                if te<=0:
-                                    print(f"{te} Health")
-                                else:
-                                    k=5
-                                    poison=1
-                                if angle==360:
-                                    mid = pygame.transform.rotate(mid,0)
-                                else:
-                                    mid = pygame.transform.rotate(mid,360-angle)
-                                    angle = 360
-                                print(f"{te} Health")
+                            
                             elif button.text == 'Block':
                                     if ehealth<=0:
                                         print(f"{ehealth} Health")
@@ -354,24 +352,162 @@ while True:
                                         mid = pygame.transform.rotate(mid,90-angle)
                                         angle = 90
                                     print(f"{ehealth} Health")
-        
+                            elif button.text == 'Drink milk':
+                                    if ehealth<=0:
+                                        print(f"{ehealth} Health")
+                                
+                                    else:
+                                        if phealth > 300:
+                                            phealth += damage
+                                        else:
+                                            phealth=phealth+(damage*2)
+                                    if angle==90:
+                                        mid = pygame.transform.rotate(mid,0)
+                                    else:
+                                        mid = pygame.transform.rotate(mid,90-angle)
+                                        angle = 90
+                                    print(f"{ehealth} Health")
+                            elif button.text == 'Stab' or button.text== 'Power up':
+                                    if ehealth<=0:
+                                        print(f"{ehealth} Health")
+                                    else:
+                                        ehealth -= 20
+                                        bleeding=5
+                                        bleed=1
+                                    if angle==360:
+                                        mid = pygame.transform.rotate(mid,0)
+                                    else:
+                                        mid = pygame.transform.rotate(mid,90-angle)
+                                        angle = 90
+                                    print(f"{ehealth} Health")
 
-                            for i in range (60):
-                                timer = 0
-                        
-                            timer = 1
-    
-
-
-
-
-
-
-                            #if angle==180:
-                               # mid = pygame.transform.rotate(mid,0)
-                           # else:
-                               # mid = pygame.transform.rotate(mid,180-angle)
-                               # angle = 180
+                            elif button.text == 'Slash' or button.text =='Kick':
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=80:
+                                        ehealth-= 40
+                                    else:
+                                        ehealth -= 25
+                                if angle==180:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,180-angle)
+                                    angle = 180
+                                print(ehealth)
+                            elif button.text == 'Super jump' or button.text == 'Milkshot':
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=95:
+                                        ehealth-=30
+                                        if enemy.damage > 5:
+                                            enemy.damage -= 5
+                                    else:
+                                        ehealth -= 15
+                                        if enemy.damage > 5:
+                                            enemy.damage -= 3
+                                if angle==180:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,180-angle)
+                                    angle = 180
+                                print(ehealth)
+                            elif button.text == 'Moneyspread' or button.text == 'Moo':
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=95:
+                                        ehealth-=70
+                                      
+                                    else:
+                                        ehealth -= 10
+                                      
+                                if angle==360:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,360-angle)
+                                    angle = 360
+                                print(ehealth)
+                            
+                            elif button.text == 'Fireball':
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=95:
+                                        ehealth-=60
+                                        bleeding=2
+                                        bleed=1
+                                    else:
+                                        ehealth -= 40
+                                        bleeding=2
+                                        bleed=1
+                                if angle==360:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,360-angle)
+                                    angle = 360
+                                print(ehealth)
+                            elif button.text == 'Bag charge':
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=95:
+                                       player.move2 = 'Bag throw'
+                                       phealth = phealth + (damage-5)
+                                    else:
+                                        player.move2 = 'Bag throw'
+                                        print(player.move2)
+                                if angle==180:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,180-angle)
+                                    angle = 180
+                                print(ehealth)
+                            elif button.text == 'Bag throw':
+                            
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=95:
+                                       ehealth-=100
+                                       player.move2 = 'Bag charge'
+                                    else:
+                                        player.move2 = 'Bag charge'
+                                        ehealth-=70
+                                if angle==180:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,180-angle)
+                                    angle = 180
+                                print(ehealth)
+                            elif button.text == 'Dodge':
+                                if ehealth<=0:
+                                    print(f"{ehealth} Health")
+                                
+                                else:
+                                    if crit >=70:
+                                      pass
+                                    else:
+                                        phealth += (damage-5)
+                                        ehealth -= 10
+                                        
+                                if angle==360:
+                                    mid = pygame.transform.rotate(mid,0)
+                                else:
+                                    mid = pygame.transform.rotate(mid,360-angle)
+                                    angle = 360
+                                print(ehealth)
+        elif level == 'win' or level == 'lose':
+            playerpos.x = 600
+            playerpos.y = 400               
+                           
   
 
     # Keep square on screen
@@ -390,11 +526,17 @@ while True:
             screen.blit(ship, (0,0))
             screen.blit(alien, (playerpos.x,playerpos.y))
             screen.blit(ufo2, (90,300))
+            screen.blit(sign, (85,450))
 
        
         if level=="col":
             screen.blit(background2,(0,0))
-            
+            col_text = font.render(
+                f'Press space to pick up, press Esc to return',
+                True,
+                (0,0,0)
+            )
+            screen.blit(col_text, ((0, 0)))
             screen.blit(current_image,(x,y))
             for pickup in active_pickups:
                 screen.blit(pickup.image, (pickup.u, pickup.i))
@@ -428,14 +570,33 @@ while True:
             pygame.draw.rect(screen,red,healthbar2)
             for button in buttons:
                 button.draw(screen)
+
+        if level == 'win':
+            screen.blit(background4,(0,0))
+            wtext = font.render(
+                f'You won',
+               True, 
+                (255, 255, 255)
+            )
+            screen.blit(wtext,(500,375))
+        elif level == 'lose':
+            screen.blit(background4,(0,0))
+            ltext = font.render(
+                f'You lost',
+               True, 
+                (255, 255, 255)
+            )
+            screen.blit(ltext,(500,375))
+
     
-        if alien_rect.colliderect(door):
+        if alien_rect.colliderect(door) and level not in ('win', 'lose'):
            level="com"
-        elif alien_rect.colliderect(ufo_rect):
-           level="col"
+        elif alien_rect.colliderect(ufo_rect) and level not in ('win', 'lose'):
+            level="col"
         
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_k]:
+        if keys[pygame.K_ESCAPE] and level not in ('win', 'lose'): 
+                active_pickups = random.sample(pickups, 3)
                 level='bev'
                 playerpos.x = 600
                 playerpos.y = 400

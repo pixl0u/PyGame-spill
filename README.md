@@ -25,10 +25,18 @@ gjøre ferdig kombineringen            done
 
 fiske bakgrunnene 
 
-fikse hitboxen
+fiske healtbar  done
 
-fiske healtbar
+lage ny alien 
 
-lage ny alien
+fikse alle moves  done
 
-fikse alle moves
+
+
+
+
+
+playtesting:
+trip krasjer spillet
+det var gøy å ha infinete hp
+trukk på R i ufo gamet
