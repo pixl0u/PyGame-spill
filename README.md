@@ -23,11 +23,11 @@ plukke opp karakterene           done
 
 gjøre ferdig kombineringen            done
 
-fiske bakgrunnene 
+fiske bakgrunnene  done
 
 fiske healtbar  done
 
-lage ny alien 
+lage ny alien  done
 
 fikse alle moves  done
 

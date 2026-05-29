@@ -14,10 +14,10 @@ clock = pygame.time.Clock()
 
 # Square settings
 square_size = 64
-playerpos = pygame.math.Vector2(WIDTH/2, HEIGHT/2)
+playerpos = pygame.math.Vector2(550, 350)
 speed = 5
 print('sknskje') 
-alien = pygame.image.load('images/elien.png')
+alien = pygame.image.load('images/alien_front.png')
 ship = pygame.image.load('images/ship_big.png')
 ufo = pygame.image.load('images/gfo.png')
 ufo2 =pygame.transform.scale(ufo, (232, 112))
@@ -31,7 +31,7 @@ sign = pygame.image.load('images/sign.png')
 background1 = pygame.image.load('images/bev_back.png').convert_alpha()
 background2 = pygame.image.load('images/col_back.png').convert_alpha()
 grass = pygame.image.load('images/grass.png').convert_alpha()
-background3 = pygame.image.load('images/bev_back.png').convert_alpha()
+background3 = pygame.image.load('images/com_back.png').convert_alpha()
 background4 = pygame.image.load('images/win_and_lose.png').convert_alpha()
 
 beam_rect=beam.get_rect()
@@ -181,18 +181,22 @@ while True:
     # Key presses
             keys = pygame.key.get_pressed()
             if keys[pygame.K_a]:
-             playerpos.x -= speed
-             if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
+                alien= pygame.image.load('images/alien_left.png')
+                playerpos.x -= speed
+                if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
                     playerpos.x += 20
             if keys[pygame.K_d]:
+                alien= pygame.image.load('images/alien_right.png')
                 playerpos.x += speed
                 if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
                     playerpos.x -= 20
             if keys[pygame.K_w]:
+                alien= pygame.image.load('images/alien_back.png')
                 playerpos.y -= speed
                 if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
                     playerpos.y += 20
             if keys[pygame.K_s]:
+                alien= pygame.image.load('images/alien_front.png')
                 playerpos.y += speed
                 if alien_rect.colliderect(wall1) or alien_rect.colliderect(wall2):
                     playerpos.y -= 20
@@ -238,8 +242,8 @@ while True:
 # combat
 #---------------------------------------------------------------------------------
         elif level=="com":
-            healthbar=pygame.Rect(650, 100, ehealth*2, 50)
-            healthbar2=pygame.Rect(100, 600, phealth*2, 50)
+            healthbar=pygame.Rect(630, 70, ehealth*2, 50)
+            healthbar2=pygame.Rect(75, 630, phealth*2, 50)
             player_scaled = pygame.transform.scale(player.image, (width, height))
             enemy_scaled = pygame.transform.scale(enemy.image, (width, height))
             if phealth<=0:
@@ -259,13 +263,11 @@ while True:
                             if phealth<=0:
                                 print('du tapte')
                                 level='lose'
-                                playerpos.x = 600
-                                playerpos.y = 400
+                                
                             elif g==0:
                                 print('du vant')
                                 level='win'
-                                playerpos.x = 600
-                                playerpos.y = 400
+                                
 
 
 
@@ -505,9 +507,7 @@ while True:
                                     angle = 360
                                 print(ehealth)
         elif level == 'win' or level == 'lose':
-            playerpos.x = 600
-            playerpos.y = 400               
-                           
+            pass
   
 
     # Keep square on screen
@@ -545,27 +545,27 @@ while True:
           
              
         if level=="com":
-            screen.blit(background1,(0,0))
-            screen.blit(player_scaled, (150, 400))  
-            screen.blit(enemy_scaled, (800, 300))
+            screen.blit(background3,(0,0))
+            screen.blit(player_scaled, (150, 385))  
+            screen.blit(enemy_scaled, (800, 295))
             screen.blit(top,(905,500))
             screen.blit(top2,(650,500))
             screen.blit(bot,(905,625))
             screen.blit(bot2,(650,625))
             screen.blit(mid,(892,614))
             text = font.render(
-                f'Health {ehealth}',
+                f'Enemy health {ehealth}',
                 True,
-                (255, 255, 255)
+                (0, 0, 0)
             )
            
-            screen.blit(text, (650, 175))
+            screen.blit(text, (630, 135))
             text2 = font.render(
-                f'Health {phealth}',
+                f'Your health {phealth}',
                True, 
-                (255, 255, 255)
+                (0, 0, 0)
             )
-            screen.blit(text2,(100,675))
+            screen.blit(text2,(75,715))
             pygame.draw.rect(screen,red,healthbar)
             pygame.draw.rect(screen,red,healthbar2)
             for button in buttons:
@@ -598,8 +598,8 @@ while True:
         if keys[pygame.K_ESCAPE] and level not in ('win', 'lose'): 
                 active_pickups = random.sample(pickups, 3)
                 level='bev'
-                playerpos.x = 600
-                playerpos.y = 400
+                playerpos.x = 550
+                playerpos.y = 350
 
    
         pygame.display.flip()
